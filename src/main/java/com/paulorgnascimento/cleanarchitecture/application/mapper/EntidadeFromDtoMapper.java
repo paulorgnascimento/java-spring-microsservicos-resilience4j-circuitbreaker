@@ -5,6 +5,6 @@ import com.paulorgnascimento.cleanarchitecture.domain.entity.Entidade;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface EntidadeMapper {
-    Entidade toEntity(EntidadeDto dto);
+public interface EntidadeFromDtoMapper {
+    Entidade fromDto(EntidadeDto dto);
 }

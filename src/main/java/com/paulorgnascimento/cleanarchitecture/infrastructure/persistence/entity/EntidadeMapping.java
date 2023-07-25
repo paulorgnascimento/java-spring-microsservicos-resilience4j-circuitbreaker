@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class TB_Entidade {
+public class EntidadeMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

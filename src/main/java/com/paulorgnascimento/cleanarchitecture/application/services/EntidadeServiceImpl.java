@@ -1,11 +1,11 @@
 package com.paulorgnascimento.cleanarchitecture.application.services;
 
 import com.paulorgnascimento.cleanarchitecture.application.dto.EntidadeDto;
-import com.paulorgnascimento.cleanarchitecture.application.mapper.EntidadeMapper;
-import com.paulorgnascimento.cleanarchitecture.application.mapper.TB_EntidadeMapper;
+import com.paulorgnascimento.cleanarchitecture.application.mapper.EntidadeFromDtoMapper;
+import com.paulorgnascimento.cleanarchitecture.application.mapper.EntidadeMappingFromEntidadeMapper;
 import com.paulorgnascimento.cleanarchitecture.domain.entity.Entidade;
 import com.paulorgnascimento.cleanarchitecture.infrastructure.gateway.Todo;
-import com.paulorgnascimento.cleanarchitecture.infrastructure.persistence.entity.TB_Entidade;
+import com.paulorgnascimento.cleanarchitecture.infrastructure.persistence.entity.EntidadeMapping;
 import com.paulorgnascimento.cleanarchitecture.infrastructure.persistence.repository.EntidadeRepository;
 import org.springframework.stereotype.Service;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -16,17 +16,17 @@ public class EntidadeServiceImpl implements EntidadeService {
 
     private static final String MY_SERVICE = "myService";
 
-    private final EntidadeMapper entidadeMapper;
-    private final TB_EntidadeMapper entidadeTableDtoMapper;
+    private final EntidadeFromDtoMapper entidadeFromDtoMapper;
+    private final EntidadeMappingFromEntidadeMapper entidadeTableDtoMapper;
     private final EntidadeRepository entidadeTableDtoRepository;
     private final GetTodoService getTodoService;
     private Random random = new Random();
 
 
-    public EntidadeServiceImpl(EntidadeMapper entidadeMapper,
-                               TB_EntidadeMapper entidadeTableDtoMapper,
+    public EntidadeServiceImpl(EntidadeFromDtoMapper entidadeFromDtoMapper,
+                               EntidadeMappingFromEntidadeMapper entidadeTableDtoMapper,
                                EntidadeRepository entidadeRepository, GetTodoService getTodoService) {
-        this.entidadeMapper = entidadeMapper;
+        this.entidadeFromDtoMapper = entidadeFromDtoMapper;
         this.entidadeTableDtoMapper = entidadeTableDtoMapper;
         this.entidadeTableDtoRepository = entidadeRepository;
         this.getTodoService = getTodoService;
@@ -39,10 +39,10 @@ public class EntidadeServiceImpl implements EntidadeService {
 
         Todo todo = getTodoService.execute(1);
 
-        Entidade entidade = entidadeMapper.toEntity(entidadeDto);
-        TB_Entidade TBEntidade = entidadeTableDtoMapper.toTableDto(entidade);
+        Entidade entidade = entidadeFromDtoMapper.fromDto(entidadeDto);
+        EntidadeMapping entidadeMapping = entidadeTableDtoMapper.fromEntidade(entidade);
 
-        entidadeTableDtoRepository.save(TBEntidade);
+        entidadeTableDtoRepository.save(entidadeMapping);
     }
 
     public String myServiceFallback(Exception e) {
